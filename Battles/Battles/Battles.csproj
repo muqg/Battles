@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8DC0CF91-441F-43B7-8B88-C7D341DF8560}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Battles</RootNamespace>
+    <AssemblyName>Battles</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Buffs\Characters\ShadowEssence.cs" />
+    <Compile Include="Buffs\Characters\SoulShard.cs" />
+    <Compile Include="Buffs\Enemies\EnergySurge.cs" />
+    <Compile Include="Buffs\Items\AncientRegalia.cs" />
+    <Compile Include="Buffs\Items\El.cs" />
+    <Compile Include="Buffs\Items\Eld.cs" />
+    <Compile Include="Buffs\Buff.cs" />
+    <Compile Include="Characters\Soulkeeper.cs" />
+    <Compile Include="Enemies\Level 1\DustDevil.cs" />
+    <Compile Include="Enemies\Level 1\ManaWyrm.cs" />
+    <Compile Include="Enemies\Level 1\Voidwalker.cs" />
+    <Compile Include="Enemies\Level 2\FaerieDragon.cs" />
+    <Compile Include="Enemies\Level 2\KnifeJuggler.cs" />
+    <Compile Include="Enemies\Level 2\ManaAddict.cs" />
+    <Compile Include="Enemies\Level 3\EarthenRingFarseer.cs" />
+    <Compile Include="Interfaces\IBattleEvents.cs" />
+    <Compile Include="Interfaces\IExtendedBattleEvents.cs" />
+    <Compile Include="Items\Common\Level 0\Dirk.cs" />
+    <Compile Include="Items\Common\Level 0\ElRune.cs" />
+    <Compile Include="Items\Set\AncientRegalia\AncientRegaliaSet.cs" />
+    <Compile Include="Items\Set\AncientRegalia\Bracer.cs" />
+    <Compile Include="Items\Rare\Level 1\IronwoodBranch.cs" />
+    <Compile Include="Items\Common\Level 0\TirRune.cs" />
+    <Compile Include="Items\Common\Level 0\EldRune.cs" />
+    <Compile Include="Items\Common\Level 0\MinorHealthPotion.cs" />
+    <Compile Include="Items\Common\Level 1\Buckler.cs" />
+    <Compile Include="Items\Rare\Level 2\CircletOfNobility.cs" />
+    <Compile Include="Items\Item.cs" />
+    <Compile Include="Items\Set\AncientRegalia\NullTalisman.cs" />
+    <Compile Include="Items\Set\AncientRegalia\WraithBand.cs" />
+    <Compile Include="Items\Set\ItemSet.cs" />
+    <Compile Include="Main\Battle.cs" />
+    <Compile Include="Main\CharacterStats.cs" />
+    <Compile Include="Main\Unit.cs" />
+    <Compile Include="Menus\BattleMenu.cs" />
+    <Compile Include="Menus\CharacterMenu.cs" />
+    <Compile Include="Menus\ItemMenu.cs" />
+    <Compile Include="Menus\LootMenu.cs" />
+    <Compile Include="Menus\Menu.cs" />
+    <Compile Include="Characters\Character.cs" />
+    <Compile Include="Menus\MainMenu.cs" />
+    <Compile Include="Main\Stats.cs" />
+    <Compile Include="Enemies\Enemy.cs" />
+    <Compile Include="Main\Account.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Main\Command.cs" />
+    <Compile Include="Main\Player.cs" />
+    <Compile Include="Main\Game.cs" />
+    <Compile Include="Menus\PlayerMenu.cs" />
+    <Compile Include="Menus\PlayerCharactersMenu.cs" />
+    <Compile Include="Menus\SkillMenu.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Main\Utility.cs" />
+    <Compile Include="Characters\ShadowPriest.cs" />
+    <Compile Include="Skills\Shadow Priest\MindFlay.cs" />
+    <Compile Include="Skills\Shadow Priest\MindBlast.cs" />
+    <Compile Include="Skills\Shadow Priest\ShadowEmbrace.cs" />
+    <Compile Include="Skills\Shadow Priest\VampiricTouch.cs" />
+    <Compile Include="Skills\Skill.cs" />
+    <Compile Include="Interfaces\ISingleActionMenu.cs" />
+    <Compile Include="Skills\Soulkeeper\ChaosStrike.cs" />
+    <Compile Include="Skills\Soulkeeper\DrainSoul.cs" />
+    <Compile Include="Skills\Soulkeeper\DrawSoul.cs" />
+    <Compile Include="Skills\Soulkeeper\Reflection.cs" />
+    <Compile Include="Main\EffectValues.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Buffs\Common\" />
+    <Folder Include="Items\Common\Level 2\" />
+    <Folder Include="Items\Rare\Level 3\" />
+    <Folder Include="Structs\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

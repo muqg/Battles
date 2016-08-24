@@ -1,0 +1,6 @@
+C:\Users\Lubo\Documents\Visual Studio 2015\Projects\myProjects\Battles\Battles\bin\Debug\Battles.exe.config
+C:\Users\Lubo\Documents\Visual Studio 2015\Projects\myProjects\Battles\Battles\bin\Debug\Battles.exe
+C:\Users\Lubo\Documents\Visual Studio 2015\Projects\myProjects\Battles\Battles\bin\Debug\Battles.pdb
+C:\Users\Lubo\Documents\Visual Studio 2015\Projects\myProjects\Battles\Battles\obj\Debug\Battles.exe
+C:\Users\Lubo\Documents\Visual Studio 2015\Projects\myProjects\Battles\Battles\obj\Debug\Battles.pdb
+C:\Users\Lubo\Documents\Visual Studio 2015\Projects\myProjects\Battles\Battles\obj\Debug\Battles.csprojResolveAssemblyReference.cache
