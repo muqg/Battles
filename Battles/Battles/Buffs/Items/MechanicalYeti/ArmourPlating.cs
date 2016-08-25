@@ -9,6 +9,6 @@
         {
         }
 
-        protected override string Description() => $"Increases Armour by {Armour}; Turns left: {CurrentDuration}";
+        protected override string Description() => $"Increases Armour by {Armour}";
     }
 }

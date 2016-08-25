@@ -11,6 +11,6 @@
         {
         }
 
-        protected override string Description() => $"Increases spellpower by {SpellPower * Stacks}; Stacks: {Stacks}/{MaxStacks}";
+        protected override string Description() => $"Increases spellpower by {SpellPower * Stacks}";
     }
 }

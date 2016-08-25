@@ -5,7 +5,7 @@ namespace Battles.Enemies
     sealed class InjuredKvaldir : Enemy
     {
         private const string name = "Injured Kvaldir";
-        private const int bleedChance = 30;
+        private const int bleedChance = 35;
         private const int minBleed = 10;
         private const int maxBleed = 25;
 

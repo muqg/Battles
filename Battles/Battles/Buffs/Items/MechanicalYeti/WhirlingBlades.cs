@@ -9,6 +9,6 @@
         {
         }
 
-        protected override string Description() => $"Increases Attack by {Attack}; Turns left: {CurrentDuration}";
+        protected override string Description() => $"Increases Attack by {Attack}";
     }
 }

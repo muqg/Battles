@@ -10,6 +10,6 @@
         {
         }
 
-        protected override string Description() => $"Increases Health regeneration by {regen * Stacks}; Stacks: {Stacks}";
+        protected override string Description() => $"Increases Health regeneration by {regen * Stacks}";
     }
 }

@@ -10,6 +10,6 @@
         {
         }
 
-        protected override string Description() => $"Increases haste by {(int)Haste}; Turns left: {CurrentDuration}";
+        protected override string Description() => $"Increases haste by {(int)Haste}";
     }
 }

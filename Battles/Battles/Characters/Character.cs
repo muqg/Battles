@@ -12,6 +12,8 @@ namespace Battles
 
         private static CharacterMenu characterMenu = new CharacterMenu();
 
+        private int _totalVictories = 0;
+
         public Character(string name, string characterClass)
             : base(name, Constants.DefaultHealth, Constants.DefaultAttack, Constants.DefaultHaste)
         {
@@ -56,6 +58,18 @@ namespace Battles
         public List<Item> Items { get; } = new List<Item>(Constants.MaxEquippedItems);
         public List<Item> Inventory { get; } = new List<Item>(Constants.InventoryLimit);
         public string Class { get; }
+        public int TotalVictories
+        {
+            get
+            {
+                return _totalVictories;
+            }
+            set
+            {
+                _totalVictories = _totalVictories + 1; // Only increment by one.
+            }
+        }
+
         protected int Experience { get; set; } = 0;
         protected int SkillPoints { get; set; } = 1;
         protected int ExperienceForLevel => (int)((Level + (Level * Level / 10f)) * Constants.LevelExperienceBase);
@@ -180,6 +194,8 @@ namespace Battles
             $"Haste: {stats.CurrentHaste}",
             $"Health Regeneration: {stats.HealthRegen}",
             $"Mana Regeneration: {stats.ManaRegen}",
+            "",
+            $"Total victories: {TotalVictories}",
             "");
         }
 
@@ -333,6 +349,9 @@ namespace Battles
 
             foreach (Skill skill in Skills) // Manage skill cooldowns
                 skill.CurrentCooldown = Math.Max(0, skill.CurrentCooldown - 1);
+
+            foreach (Item item in Items)
+                item.CurrentCooldown = Math.Max(0, item.CurrentCooldown - 1);
         }
 
         // Deletes the character

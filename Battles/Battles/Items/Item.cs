@@ -101,6 +101,7 @@ namespace Battles
         public int Level { get; }
         public ItemRarity Rarity { get; }
         public ItemType Type { get; }
+        public int CurrentCooldown { get; set; } = 0;
 
         protected virtual string SpecialDescription { get; } = "";
         protected virtual string UsageDescription { get; } = "";
@@ -115,7 +116,6 @@ namespace Battles
         protected float Haste { get; }
         protected int SpellPower { get; }
         protected int Cooldown { get; }
-        protected int CurrentCooldown { get; set; } = 0;
         protected int DropChance { get; }
         #endregion Properties
 
@@ -126,8 +126,21 @@ namespace Battles
             return item;
         }
 
-        public string BattleDescription() => $"{Name} ({Type.ToString()}) - {UsageDescription}";
+        // Description used during the battle
+        public string BattleDescription() => $"{Name} ({Type.ToString()}) - {UsageDescription}{(CurrentCooldown > 0 ? $"| Cooldown: {CurrentCooldown}" : "")}";
 
+        // Checks whether the item is on cooldown
+        public bool CheckCooldown()
+        {
+            if (CurrentCooldown <= 0)
+                return true;
+
+            string turns = CurrentCooldown == 1 ? "turn" : "turns";
+            Console.WriteLine($"Item is on cooldown for {CurrentCooldown} more {turns}.\n");
+            return false;
+        }
+
+        // General description of the item
         public string Description()
         {
             List<string> str = new List<string>();
@@ -153,7 +166,7 @@ namespace Battles
             if (ManaRegeneration > 0)
                 str.Add($"Mana Regeneration: {ManaRegeneration}");
 
-            string setDescr = setDescription(Set);
+            string setDescr = getSetDescription(Set);
             if (setDescr.Length > 0)
                 str.Add("\n" + setDescr);
 
@@ -189,16 +202,19 @@ namespace Battles
             player.SpellPower += SpellPower;
         }
 
+        // Uses the item
         public void Use(CharacterStats player, Stats enemy)
         {
-            ItemEffect(player, enemy);
+            ItemEffect(player, enemy); // Actual effect of the item
 
-            if (Type == ItemType.Consumable)
+            if (Type == ItemType.Consumable) // Remove the item if it is consumable
             {
                 player.OwnerUnit.Inventory.Remove(this);
                 player.ActiveItems.Remove(this);
                 Game.CurrentPlayer.Save(); // Save on consuming an item
             }
+            else if(Cooldown > 0) // Set cooldown if any
+                CurrentCooldown = Cooldown + 1; // +1 since one turn is immediately skipped at the end of this one
         }
 
         public virtual bool OnAttackHit(Stats self, Stats attacker, EffectValues effect)
@@ -269,7 +285,7 @@ namespace Battles
         }
 
         // Provides description for equipped and not equipped items of a set. REQUIRES  Game.CurrentCharacter to be set!!
-        private static string setDescription(ItemSet set)
+        private static string getSetDescription(ItemSet set)
         {
             if (set != null)
             {

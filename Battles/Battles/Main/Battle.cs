@@ -1,4 +1,4 @@
-﻿using Battles.Items.Rare;
+﻿using Battles.Items.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,6 +87,7 @@ namespace Battles
                 Enemy enemyUnit = enemy.OwnerUnit as Enemy;
 
                 Menu.Announce($"You have defeated {enemyUnit.Name} in battle!");
+                player.OwnerUnit.TotalVictories += 1;
                 player.OwnerUnit.GainExperience(enemyUnit.ExperienceAward); // Award experience
 
                 // Save progress on victory (after all gains except loot -> loot saves every time after looting or dropping an item)

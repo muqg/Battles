@@ -35,10 +35,16 @@ namespace Battles
 
                         return true; // No skill has been used (e.g. back command)
                     case 3:
-                        if (player.HasUsedItem)
-                            Console.WriteLine(Constants.ItemUsedMessage);
+                        if (player.ActiveItems.Count > 0)
+                        {
+
+                            if (player.HasUsedItem)
+                                Console.WriteLine(Constants.ItemUsedMessage);
+                            else
+                                chooseItem(player, enemy);
+                        }
                         else
-                            chooseItem(player, enemy);
+                            Console.WriteLine("There are no usable items.\n");
 
                         return true; // Items don't end the turn (not considered actions)
                     case 4:
@@ -83,8 +89,14 @@ namespace Battles
                 }
                 if (command > 0 && command <= itemCount)
                 {
-                    player.ActiveItems[command - 1].Use(player, enemy);
-                    player.HasUsedItem = true;
+                    Item item = player.ActiveItems[command - 1];
+                    if (item.CheckCooldown())
+                    {
+                        player.ActiveItems[command - 1].Use(player, enemy);
+                        player.HasUsedItem = true;
+                    }
+                    else
+                        continue; // Item is on cooldown
                 }
 
                 return; // Return on used item or back command

@@ -9,6 +9,6 @@
         {
         }
 
-        protected override string Description() => $"Increases Max Health by {Health * Stacks}; Stacks: {Stacks}";
+        protected override string Description() => $"Increases Max Health by {Health * Stacks}";
     }
 }

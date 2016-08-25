@@ -9,7 +9,7 @@
         private static int pseudoBurstChance = burstChance;
 
         public FlameImp()
-            : base(name, 230, 30)
+            : base(name, 200, 30)
         {
         }
 

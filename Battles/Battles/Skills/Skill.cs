@@ -67,7 +67,7 @@ namespace Battles
 
         public string BattleDescription(CharacterStats player, Stats enemy)
         {
-            return $"{Name} ({Cost} mana) - {SpecificBattleDescription(player, enemy)}{(CurrentCooldown > 0 ? "|Cooldown: " + CurrentCooldown : "")}";
+            return $"{Name} ({Cost} mana) - {SpecificBattleDescription(player, enemy)}{(CurrentCooldown > 0 ? "| Cooldown: " + CurrentCooldown : "")}";
         }
 
         public string Description() => string.Join("\n",
@@ -92,7 +92,8 @@ namespace Battles
                 if (enemy.OwnerUnit.OnSkillHit(player, enemy, SkillEffectValues))
                 {
                     SkillEffect(player, enemy);
-                    CurrentCooldown = Cooldown + 1; // +1 since one turn is immediately skipped at the end of this one
+                    if(Cooldown > 0)
+                        CurrentCooldown = Cooldown + 1; // +1 since one turn is immediately skipped at the end of this one
                 }
 
                 return true;

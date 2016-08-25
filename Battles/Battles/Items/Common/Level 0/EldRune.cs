@@ -22,7 +22,7 @@ namespace Battles.Items.Common
             Buff.AddBuff(eld, player.Buffs);
             eld.SetStacks(player);
 
-            Console.WriteLine($"Using {Name} increases your Haste by {haste} for {duration} turns.");
+            Console.WriteLine($"Using {Name} increases your Haste by {haste} for {duration} turns.\n");
         }
     }
 }

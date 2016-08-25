@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Battles
 {
@@ -120,7 +121,7 @@ namespace Battles
 
         public override string ToString()
         {
-            return $"{Name} - {Description()}";
+            return $"{Name} - {SpecificDescription()}";
         }
 
         // Adds or removes stacks and manages corresponding stats
@@ -194,6 +195,25 @@ namespace Battles
         }
 
         protected virtual string Description() => "Unknown";
+
+        protected string SpecificDescription()
+        {
+            StringBuilder sb = new StringBuilder();
+            // General description
+            sb.Append(Description());
+
+            // Duration
+            if (CurrentDuration > 0)
+                sb.Append($"; Turns left: {CurrentDuration}");
+
+            // Stacks
+            if (MaxStacks > 1 && Stacks > 0)
+                sb.Append($"; Stacks: {Stacks}");
+            if (MaxStacks > 1 && MaxStacks != int.MaxValue)
+                sb.Append($"/{MaxStacks}");
+
+            return sb.ToString();
+        }
 
         // Returns buff of type T. It is added if not already present
         private static T GetBuff<T>(List<Buff> buffs) where T : Buff, new()

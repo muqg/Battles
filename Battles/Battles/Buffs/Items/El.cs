@@ -12,6 +12,6 @@ namespace Battles
         {
         }
 
-        protected override string Description() => $"Decreases armour by {Math.Abs(Armour) * Stacks}; Turns left: {CurrentDuration}; Stacks: {Stacks}/{MaxStacks}";
+        protected override string Description() => $"Decreases armour by {Math.Abs(Armour) * Stacks}";
     }
 }

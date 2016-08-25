@@ -5,10 +5,10 @@
         private const string name = "Time Rewinder";
 
         public TimeRewinder()
-            : base(name, haste: 50, duration: 2, dispellable: false)
+            : base(name, haste: 50, duration: 3, dispellable: false)
         {
         }
 
-        protected override string Description() => $"Increases haste by {Stacks * Haste}; Turns left: {CurrentDuration}; Stacks: {Stacks}";
+        protected override string Description() => $"Increases haste by {Stacks * Haste}";
     }
 }
