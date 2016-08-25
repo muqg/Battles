@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Battles.Items.Rare;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -72,7 +73,16 @@ namespace Battles
 
         private static bool checkVictoryDefeat(CharacterStats player, Stats enemy)
         {
-            if (enemy.Health == 0)
+            if (player.Health == 0)
+            {
+                // Save progress on defeat
+                Game.CurrentPlayer.Save();
+
+                Menu.Announce($"{enemy.OwnerUnit.Name} has defeated you in battle!");
+                PressAnyKey();
+                return true;
+            }
+            else if (enemy.Health == 0)
             {
                 Enemy enemyUnit = enemy.OwnerUnit as Enemy;
 
@@ -95,15 +105,6 @@ namespace Battles
                     PressAnyKey();
                 }
 
-                return true;
-            }
-            else if (player.Health == 0)
-            {
-                // Save progress on defeat
-                Game.CurrentPlayer.Save();
-
-                Menu.Announce($"{enemy.OwnerUnit.Name} has defeated you in battle!");
-                PressAnyKey();
                 return true;
             }
 

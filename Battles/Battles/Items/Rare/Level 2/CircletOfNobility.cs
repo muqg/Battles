@@ -6,8 +6,8 @@ namespace Battles.Items.Rare
     sealed class CircletOfNobility : Item
     {
         private const string name = "Circlet of Nobility";
-        private const int attributeBonus = 5;
-        private const int dropChance = 35;
+        private const int attributeBonus = 4;
+        private const int dropChance = 27;
 
         public CircletOfNobility()
             : base(name,

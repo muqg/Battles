@@ -18,13 +18,6 @@ namespace Battles
         private int attackModifier => 1 + Level / 4;
         private int shardModifier => Level;
 
-        public override string BattleDescription(CharacterStats player, Stats enemy)
-        {
-            int power = Power(player, enemy);
-
-            return base.BattleDescription(player, enemy) + $"Deals ({power}) damage to your enemy and ({power / 2}) damage to you.";
-        }
-
         public override void Refresh()
         {
             shard = new SoulShard();
@@ -35,15 +28,7 @@ namespace Battles
         {
             shard = Buff.AddBuff<SoulShard>(player.Buffs);
 
-            return player.Attack * attackModifier + shard.Stacks * shardModifier;
-        }
-
-        protected override bool SetSkillEffectValues(CharacterStats player, Stats enemy)
-        {
-            int damage = Power(player, enemy);
-            SkillEffectValues = new EffectValues(damage, source: this);
-
-            return true;
+            return player.Attack * attackModifier + shard.Stacks * shardModifier - enemy.Armour;
         }
 
         protected override void SkillEffect(CharacterStats player, Stats enemy)
@@ -52,7 +37,14 @@ namespace Battles
             Battle.WritePlayerDamage(name, "effect", SkillEffectValues.Damage / 2, player.Health);
         }
 
-        protected override string SpecificDescription() => $"A powerful strike that damages both you and your enemy. Deals ({Game.CurrentCharacter.Attack * attackModifier}) damage and "
-            + $"an additional ({shardModifier}) damage for each {shard.Name}. Damages you for half that amount.";
+        protected override string SpecificBattleDescription(CharacterStats player, Stats enemy)
+        {
+            int power = Power(player, enemy);
+
+            return $"Deals ({power}) damage to your enemy and ({power / 2}) damage to you.";
+        }
+
+        protected override string SpecificDescription() => $"A powerful attack that damages your enemy and you for half that amount. Damage increases for each {shard.Name}."
+            + "\nLevels increase both attack and shard bonus damage.";
     }
 }

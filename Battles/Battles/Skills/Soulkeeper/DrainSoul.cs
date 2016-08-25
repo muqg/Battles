@@ -15,23 +15,17 @@ namespace Battles
         {
         }
 
-
-        public override string BattleDescription(CharacterStats player, Stats enemy)
-        {
-            return base.BattleDescription(player, enemy) + $"Drains ({Power(player.SpellPower)}) health from your enemy and generates a {shard.Name}.";
-        }
-
         public override void Refresh()
         {
             shard = new SoulShard();
             base.Refresh();
         }
 
-        protected override int Power(int powerStat) => powerStat / 4 + Level * 10;
+        protected override int Power(CharacterStats player, Stats enemy) => player.SpellPower / 4 + Level * 10;
 
         protected override bool SetSkillEffectValues(CharacterStats player, Stats enemy)
         {
-            int drain = Power(player.SpellPower);
+            int drain = Power(player, enemy);
             SkillEffectValues = new EffectValues(drain, drain, this);
 
             return true;
@@ -44,7 +38,8 @@ namespace Battles
             shard.WriteStacks();
         }
 
-        protected override string SpecificDescription() => $"Drains the soul of your enemy draining ({Power(Game.CurrentCharacter.SpellPower)}) health "
-            + $"and generates a {shard.Name}.";
+        protected override string SpecificBattleDescription(CharacterStats player, Stats enemy) => $"Drains ({Power(player, enemy)}) health from your enemy and generates a {shard.Name}.";
+
+        protected override string SpecificDescription() => $"Drains the soul of your enemy draining health and generating a {shard.Name}.\nLevels increase drain amount.";
     }
 }

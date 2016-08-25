@@ -16,13 +16,6 @@ namespace Battles
         {
         }
 
-        public override string BattleDescription(CharacterStats player, Stats enemy)
-        {
-            int power = Math.Abs(Power(player, enemy));
-
-            return base.BattleDescription(player, enemy) + $"Deals ({power}) damage to your enemy and heals you for ({power}). (Requires {soulShardCost} {shard.Name})";
-        }
-
         public override void Refresh()
         {
             shard = new SoulShard();
@@ -56,6 +49,13 @@ namespace Battles
         {
             shard.SetStacks(player, -soulShardCost);
             shard.WriteStacks();
+        }
+
+        protected override string SpecificBattleDescription(CharacterStats player, Stats enemy)
+        {
+            int power = Math.Abs(Power(player, enemy));
+
+            return $"Deals ({power}) damage to your enemy and heals you for ({power}). (Requires {soulShardCost} {shard.Name})";
         }
 
         protected override string SpecificDescription() => "Attempts to draw your health to your enemy's. Heals you for the difference between your health and that of your enemy "

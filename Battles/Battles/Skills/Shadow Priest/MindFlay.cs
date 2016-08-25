@@ -17,11 +17,6 @@ namespace Battles
 
         private int EssenceGainChance => 25 * Level;
 
-        public override string BattleDescription(CharacterStats player, Stats enemy)
-        {
-            return base.BattleDescription(player, enemy) + $"Deals {Power(player.SpellPower)} damage and has a {EssenceGainChance}% chance to grant a {essence.Name}.";
-        }
-
         public override void Refresh()
         {
             essence = new ShadowEssence();
@@ -30,15 +25,7 @@ namespace Battles
             base.Refresh();
         }
 
-        protected override int Power(int powerStat) => (Level * 10 + powerStat) / 2;
-
-        protected override bool SetSkillEffectValues(CharacterStats player, Stats enemy)
-        {
-            int damage = Power(player.SpellPower);
-            SkillEffectValues = new EffectValues(damage, source: this);
-
-            return true;
-        }
+        protected override int Power(CharacterStats player, Stats enemy) => (Level * 10 + player.SpellPower) / 2;
 
         protected override void SkillEffect(CharacterStats player, Stats enemy)
         {
@@ -51,7 +38,10 @@ namespace Battles
             }
         }
 
-        protected override string SpecificDescription() => $"Flays the mind of your enemy for ({Power(Game.CurrentCharacter.SpellPower)}) damage "
-            + $"and has a ({EssenceGainChance}%) chance to grant you a Shadow Essence.";
+        protected override string SpecificBattleDescription(CharacterStats player, Stats enemy) => 
+            $"Deals {Power(player, enemy)} damage and has a {EssenceGainChance}% chance to grant a {essence.Name}.";
+
+        protected override string SpecificDescription() => $"Flays the mind of your enemy dealing damage "
+            + $"and has a ({EssenceGainChance}%) chance to grant you a {essence.Name}. \nLevels increase damage and gain chance.";
     }
 }

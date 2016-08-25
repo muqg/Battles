@@ -2,14 +2,14 @@
 {
     sealed class KnifeJuggler : Enemy
     {
-        private const int throwChance = 16;
+        private const int throwChance = 18;
         private const int minThrowDamage = 7;
         private const int maxThrowDamage = 15;
 
         private int throwPseudoChance = throwChance;
 
         public KnifeJuggler() 
-            : base("Knife Juggler", 200, 20, 2)
+            : base("Knife Juggler", 200, 22, 2)
         {
         }
 

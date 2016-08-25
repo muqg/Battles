@@ -107,7 +107,7 @@ namespace Battles
                 if (command > 0 && command <= skillCount)
                 {
                     Skill skill = skills[command - 1];
-                    if (skill.UseMana(player))
+                    if (skill.CheckCooldown() && skill.UseMana(player))
                         return skill;
 
                     continue;

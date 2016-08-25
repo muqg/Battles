@@ -20,7 +20,7 @@ namespace Battles.Items.Common
 
         public override bool OnAttackHit(Stats self, Stats attacker, EffectValues effect)
         {
-            if(base.OnAttackHit(self, attacker, effect))
+            if (base.OnAttackHit(self, attacker, effect))
             {
                 if (Utility.GetPseudoChance(blockChance, ref pseudoBlockChance))
                 {

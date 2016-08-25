@@ -15,25 +15,18 @@ namespace Battles
         {
         }
 
-        public override string BattleDescription(CharacterStats player, Stats enemy)
-        {
-            int stacks = Buff.AddBuff<ShadowEssence>(player.Buffs).Stacks;
-            return base.BattleDescription(player, enemy) + $"Restores {heal} health and {manaRestore} mana to you and deals {Power(player.SpellPower)} damage to your enemy per stack of {essence.Name}. "
-                + $"Consumes all({stacks}) {essence.Name}.";
-        }
-
         public override void Refresh()
         {
             essence = new ShadowEssence();
             base.Refresh();
         }
 
-        protected override int Power(int powerStat) => powerStat / 4 + Level * 10;
+        protected override int Power(CharacterStats player, Stats enemy) => player.SpellPower / 4 + Level * 10;
 
         protected override bool SetSkillEffectValues(CharacterStats player, Stats enemy)
         {
             essence = Buff.AddBuff<ShadowEssence>(player.Buffs);
-            int damage = Power(player.SpellPower) * essence.Stacks;
+            int damage = Power(player, enemy) * essence.Stacks;
             int healing = heal * essence.Stacks;
 
             SkillEffectValues = new EffectValues(damage, healing, this);
@@ -51,7 +44,16 @@ namespace Battles
             essence.WriteStacks();
         }
 
-        protected override string SpecificDescription() => $"Restores {heal} health and {manaRestore} mana to you and deals ({Power(Game.CurrentCharacter.SpellPower)}) damage "
-            + $"to your enemy per stack of {essence.Name}. Stacks are consumed.";
+        protected override string SpecificBattleDescription(CharacterStats player, Stats enemy)
+        {
+            int stacks = Buff.AddBuff<ShadowEssence>(player.Buffs).Stacks;
+            int damage = Power(player, enemy);
+
+            return $"Restores {heal} health and {manaRestore} mana to you and deals ({damage}) damage to your enemy per stack of {essence.Name}."
+                + $"Consumes all ({stacks}) of {essence.Name}.";
+        }
+
+        protected override string SpecificDescription() => $"Restores health and mana to you and deals damage "
+            + $"to your enemy per each stack of {essence.Name}. Stacks are consumed in the process.";
     }
 }

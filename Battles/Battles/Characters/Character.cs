@@ -220,12 +220,13 @@ namespace Battles
             }
             if(item.Level > Level)
             {
-                Console.WriteLine($"Item requires character level {item.Level}.");
+                Console.WriteLine($"Item requires character level {item.Level}.\n");
                 return false;
             }
 
             Inventory.Remove(item);
             Items.Add(item);
+            Console.WriteLine($"Equipped {item.Name}.\n");
 
             // Save on equipped item
             Game.CurrentPlayer.Save();
@@ -315,6 +316,7 @@ namespace Battles
 
             Items.Remove(item);
             Inventory.Add(item);
+            Console.WriteLine($"Unequipped {item.Name}.\n");
 
             // Save on unequiping item
             Game.CurrentPlayer.Save();
@@ -322,12 +324,15 @@ namespace Battles
             return true;
         }
 
-        protected override void EndTurn(CharacterStats player, Stats enemy)
+        protected sealed override void EndTurn(CharacterStats player, Stats enemy)
         {
             player.CheckBuffs(); // Check for buff effects
             player.HasUsedItem = false; // Reset item usage
             player.Health += player.HealthRegen;
             player.Mana += player.ManaRegen;
+
+            foreach (Skill skill in Skills) // Manage skill cooldowns
+                skill.CurrentCooldown = Math.Max(0, skill.CurrentCooldown - 1);
         }
 
         // Deletes the character

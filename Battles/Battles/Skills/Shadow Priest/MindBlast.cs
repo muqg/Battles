@@ -8,16 +8,8 @@ namespace Battles
         private static ShadowEssence essence;
 
         public MindBlast()
-            : base("Mind Blast", SkillType.Magic, 8, cooldown: 2)
+            : base("Mind Blast", SkillType.Magic, 8, cooldown: 3)
         {
-        }
-
-        // TODO: base.GetBattleInfo calls a virtual method instead
-        public override string BattleDescription(CharacterStats player, Stats enemy)
-        {
-            int stacks = Buff.AddBuff<ShadowEssence>(player.Buffs).Stacks;
-
-            return base.BattleDescription(player, enemy) + $"Consumes all({stacks}) {essence.Name} to deal {Power(player.SpellPower)} damage per stack.";
         }
 
         public override void Refresh()
@@ -27,12 +19,12 @@ namespace Battles
             base.Refresh();
         }
 
-        protected override int Power(int powerStat) => (Level * 5) + (powerStat / 4);
+        protected override int Power(CharacterStats player, Stats enemy) => (Level * 5) + (player.SpellPower / 4);
 
         protected override bool SetSkillEffectValues(CharacterStats player, Stats enemy)
         {
             essence = Buff.AddBuff<ShadowEssence>(player.Buffs);
-            int damage = Power(player.SpellPower) * essence.Stacks;
+            int damage = Power(player, enemy) * essence.Stacks;
 
             SkillEffectValues = new EffectValues(damage, source: this);
 
@@ -45,7 +37,14 @@ namespace Battles
             essence.WriteStacks();
         }
 
-        protected override string SpecificDescription() => $"Consumes all stacks of Shadow Essence to blast the mind of your enemy for ({Power(Game.CurrentCharacter.SpellPower)}) "
-            + $"damage per stack. Has {Cooldown} turns cooldown.";
+        protected override string SpecificBattleDescription(CharacterStats player, Stats enemy)
+        {
+            int stacks = Buff.AddBuff<ShadowEssence>(player.Buffs).Stacks;
+            int damage = Power(player, enemy);
+
+            return $"Consumes all({stacks}) of {essence.Name} to deal ({damage}) damage per stack.";
+        }
+
+        protected override string SpecificDescription() => $"Consumes all stacks of {essence.Name} to blast the mind of your enemy dealing damage per each stack.\nLevels increase damage.";
     }
 }

@@ -49,8 +49,9 @@ namespace Battles
         public bool IsUltimate { get; }
         public int Level { get; protected set; }
         public int Cost { get; }
+        public int CurrentCooldown { get; set; }
 
-        protected int Cooldown { get; set; } // TODO: Cooldowns
+        protected int Cooldown { get; }
         protected int MaxLevel { get; }
         protected SkillType Type { get; }
         protected EffectValues SkillEffectValues { get; set; }
@@ -64,7 +65,10 @@ namespace Battles
             return skill;
         }
 
-        public virtual string BattleDescription(CharacterStats player, Stats enemy) => $"{Name} ({Cost} mana) - ";
+        public string BattleDescription(CharacterStats player, Stats enemy)
+        {
+            return $"{Name} ({Cost} mana) - {SpecificBattleDescription(player, enemy)}{(CurrentCooldown > 0 ? "|Cooldown: " + CurrentCooldown : "")}";
+        }
 
         public string Description() => string.Join("\n",
             $"{Name}, Level {Level}" + (IsUltimate ? " (Ultimate)" : ""),
@@ -88,6 +92,7 @@ namespace Battles
                 if (enemy.OwnerUnit.OnSkillHit(player, enemy, SkillEffectValues))
                 {
                     SkillEffect(player, enemy);
+                    CurrentCooldown = Cooldown + 1; // +1 since one turn is immediately skipped at the end of this one
                 }
 
                 return true;
@@ -100,9 +105,20 @@ namespace Battles
         public virtual void Refresh()
         {
             SkillEffectValues = new EffectValues();
+            CurrentCooldown = 0;
         }
 
         public override string ToString() => $"{Name}, level {Level}";
+
+        public bool CheckCooldown()
+        {
+            if (CurrentCooldown <= 0)
+                return true;
+
+            string turns = CurrentCooldown == 1 ? "turn" : "turns";
+            Console.WriteLine($"Skill is on cooldown for {CurrentCooldown} more {turns}.\n");
+            return false;
+        }
 
         // Levels the skill up
         public bool LevelUp()
@@ -132,23 +148,24 @@ namespace Battles
             }
         }
 
-        // Sets effect values and checks casting conditions
-        // Returns true on valid usage condition (e.g. player has enough soul shards to cast draw soul)
-        protected abstract bool SetSkillEffectValues(CharacterStats player, Stats enemy);
+        // Used to calculate the power of the skill
+        protected abstract int Power(CharacterStats player, Stats enemy);
 
         // The actual effect of the skill (everything except usage conditions and damage/healing calculations)
         protected abstract void SkillEffect(CharacterStats player, Stats enemy);
 
-        // Where powerStat is the attack or spellpower of the character used as power modifier for the skill
-        protected virtual int Power(int powerStat)
-        {
-            return 0;
-        }
-        protected virtual int Power(CharacterStats player, Stats enemy)
-        {
-            return 0;
-        }
+        // Skill specific description for battle
+        protected abstract string SpecificBattleDescription(CharacterStats player, Stats enemy);
 
-        protected virtual string SpecificDescription() => "";
+        // Skill specific general description -> effect, usage and leveling
+        protected abstract string SpecificDescription();
+
+        // Sets effect values and checks casting conditions
+        // Returns true on valid usage condition (e.g. player has enough soul shards to cast draw soul)
+        protected virtual bool SetSkillEffectValues(CharacterStats player, Stats enemy)
+        {
+            SkillEffectValues = new EffectValues(Power(player, enemy), source: this);
+            return true;
+        }
     }
 }

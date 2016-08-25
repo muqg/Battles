@@ -28,9 +28,8 @@ namespace Battles
 
         protected abstract void EndTurn(CharacterStats player, Stats enemy);
 
-        public virtual void Act(CharacterStats player, Stats enemy)
+        public virtual void Act(CharacterStats player, Stats enemy) // Always call when overriding
         {
-            // Always call this or base when overriding
             EndTurn(player, enemy);
         }
 

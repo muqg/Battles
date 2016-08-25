@@ -12,12 +12,7 @@ namespace Battles
         {
         }
 
-        private int StackGain => (int)Level * 1;
-
-        public override string BattleDescription(CharacterStats player, Stats enemy)
-        {
-            return base.BattleDescription(player, enemy) + $"Deals {Power(player.SpellPower)} damage and grants {StackGain} {essence.Name}.";
-        }
+        private int StackGain => Level * 1;
 
         public override void Refresh()
         {
@@ -25,15 +20,7 @@ namespace Battles
             base.Refresh();
         }
 
-        protected override int Power(int powerStat) => powerStat;
-
-        protected override bool SetSkillEffectValues(CharacterStats player, Stats enemy)
-        {
-            int damage = Power(player.SpellPower);
-            SkillEffectValues = new EffectValues(damage, source: this);
-
-            return true;
-        }
+        protected override int Power(CharacterStats player, Stats enemy) => player.SpellPower;
 
         protected override void SkillEffect(CharacterStats player, Stats enemy)
         {
@@ -42,7 +29,9 @@ namespace Battles
             essence.WriteStacks();
         }
 
+        protected override string SpecificBattleDescription(CharacterStats player, Stats enemy) => $"Deals ({Power(player, enemy)}) damage and grants {StackGain} {essence.Name}.";
+
         protected override string SpecificDescription() => $"Shadows engulf you granting ({StackGain}) Shadow Essence and dealing "
-            + $"{Power(Game.CurrentCharacter.SpellPower)} damage to your enemy.";
+            + $"damage to your enemy.\nLevels increase the amount of stacks gained.";
     }
 }

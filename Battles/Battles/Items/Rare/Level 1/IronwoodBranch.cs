@@ -7,7 +7,7 @@ namespace Battles.Items.Rare
     {
         private const string name = "Ironwood Branch";
         private const int attributeBonus = 2;
-        private const int dropChance = 35;
+        private const int dropChance = 27;
 
         public IronwoodBranch()
             : base(name,
