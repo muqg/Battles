@@ -8,7 +8,7 @@ namespace Battles.Items.Common
         private const string name = "Nef Rune";
 
         public NefRune()
-            : base(name)
+            : base(name, ItemType.Consumable, level: 1, dropChance: 37)
         {
             // TODO:
         }

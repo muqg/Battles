@@ -1,5 +1,4 @@
-﻿using Battles.Items.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -44,28 +43,28 @@ namespace Battles
         }
 
         // Used for enemy attacks on player
-        public static void WritePlayerDamage(string enemyName, string skillName, float damage, float playerHealth)
+        public static void WritePlayerDamage(string enemyName, string sourceName, float damage, float playerHealth)
         {
-            Console.WriteLine($"{enemyName}'s {skillName} hits you for {damage} damage.".Indent());
+            Console.WriteLine($"{enemyName}'s {sourceName} hits you for {damage} damage.".Indent());
             Console.WriteLine($"You have {playerHealth} health left.".Indent());
             Console.WriteLine();
         }
 
         // Used for player healing
-        public static void WritePlayerHealthGain(string skillName, float healthRestored, CharacterStats player)
+        public static void WritePlayerHealthGain(string sourceName, float healthRestored, CharacterStats player)
         {
-            Console.WriteLine($"{skillName} restores {healthRestored} health to you.".Indent());
+            Console.WriteLine($"{sourceName} restores {healthRestored} health to you.".Indent());
             Console.WriteLine($"You have {player.Health} health left.".Indent());
             Console.WriteLine();
         }
 
         // Used for player mana regen or drain
-        public static void WritePlayerMana(string name, float mana, CharacterStats player, bool restore = true)
+        public static void WritePlayerMana(string sourceName, float mana, CharacterStats player, bool restore = true)
         {
             if (restore) // Restores mana
-                Console.WriteLine($"{name} restores {mana} mana to you.".Indent());
+                Console.WriteLine($"{sourceName} restores {mana} mana to you.".Indent());
             else // Drains mana
-                Console.WriteLine($"{name} drains {mana} mana from you.".Indent());
+                Console.WriteLine($"{sourceName} drains {mana} mana from you.".Indent());
             Console.WriteLine($"You have {player.Mana} mana left.".Indent());
             Console.WriteLine();
         }
@@ -87,7 +86,6 @@ namespace Battles
                 Enemy enemyUnit = enemy.OwnerUnit as Enemy;
 
                 Menu.Announce($"You have defeated {enemyUnit.Name} in battle!");
-                player.OwnerUnit.TotalVictories += 1;
                 player.OwnerUnit.GainExperience(enemyUnit.ExperienceAward); // Award experience
 
                 // Save progress on victory (after all gains except loot -> loot saves every time after looting or dropping an item)

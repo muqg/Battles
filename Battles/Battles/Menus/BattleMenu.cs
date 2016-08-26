@@ -111,7 +111,7 @@ namespace Battles
                 string[] options = skills.Where(s => s.Level > 0).Select(s => s.BattleDescription(player, enemy)).ToArray();
                 int skillCount = options.Length;
                 Menu.Announce("Choose a skill");
-                Console.WriteLine($"Mana: {player.Mana}\n");
+                Console.WriteLine($"Mana: {player.Mana}/{player.MaxMana}\n");
 
                 Menu.ShowOptions(options, true);
 

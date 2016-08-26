@@ -12,8 +12,6 @@ namespace Battles
 
         private static CharacterMenu characterMenu = new CharacterMenu();
 
-        private int _totalVictories = 0;
-
         public Character(string name, string characterClass)
             : base(name, Constants.DefaultHealth, Constants.DefaultAttack, Constants.DefaultHaste)
         {
@@ -54,21 +52,11 @@ namespace Battles
         public int Mana { get; protected set; } = Constants.DefaultMana;
         public int ManaRegeneration { get; protected set; } = Constants.DefaultManaRegeneration;
         public int SpellPower { get; protected set; } = Constants.DefaultSpellpower;
+        public int TotalVictories { get; protected set; } = 0;
         public List<Skill> Skills { get; } = new List<Skill>();
         public List<Item> Items { get; } = new List<Item>(Constants.MaxEquippedItems);
         public List<Item> Inventory { get; } = new List<Item>(Constants.InventoryLimit);
         public string Class { get; }
-        public int TotalVictories
-        {
-            get
-            {
-                return _totalVictories;
-            }
-            set
-            {
-                _totalVictories = _totalVictories + 1; // Only increment by one.
-            }
-        }
 
         protected int Experience { get; set; } = 0;
         protected int SkillPoints { get; set; } = 1;
@@ -145,6 +133,7 @@ namespace Battles
             character.Level = loadingCharacter.Level;
             character.Experience = loadingCharacter.Experience;
             character.SkillPoints = loadingCharacter.SkillPoints;
+            character.TotalVictories = loadingCharacter.TotalVictories;
 
             for (int i = 0; i < loadingCharacter.Skills.Count; i++)
             {
@@ -253,6 +242,8 @@ namespace Battles
         // Character experience gain. Levels the character up, adds extra experience on top and adds skill points for leveling.
         public void GainExperience(int experienceGained)
         {
+            TotalVictories += 1; // Experience is ONLY gained after defeating an enemy
+
             if (Level < Constants.MaxLevel)
             {
                 Console.WriteLine($"You have gained {experienceGained} experience.\n");

@@ -28,7 +28,7 @@ namespace Battles
         {
             shard = Buff.AddBuff<SoulShard>(player.Buffs);
 
-            return player.Attack * attackModifier + shard.Stacks * shardModifier - enemy.Armour;
+            return Math.Max(0, player.Attack * attackModifier + shard.Stacks * shardModifier - enemy.Armour);
         }
 
         protected override void SkillEffect(CharacterStats player, Stats enemy)

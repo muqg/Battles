@@ -3,13 +3,13 @@
 namespace Battles.Items.Common
 {
     [Serializable]
-    sealed class MinorHealthPotion : Item
+    sealed class FaerieFireItem : Item
     {
-        private const string name = "Minor Health Potion";
+        private const string name = "Faerie Fire";
         private const int healthRestore = 8;
 
-        public MinorHealthPotion()
-            : base(name, ItemType.Consumable, dropChance: 70)
+        public FaerieFireItem()
+            : base(name, ItemType.Active, level: 1, attack: 2, cooldown: 5, dropChance: 25)
         {
         }
 

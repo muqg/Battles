@@ -17,29 +17,24 @@ namespace Battles.Items.Rare
         {
         }
 
-        protected override string SpecialDescription { get; } = $"On being attacked has a {blockChance}% chance to block {minBlock}-{maxBlock} damage.";
-
-        public override bool OnAttackHit(Stats self, Stats attacker, EffectValues effect)
-        {
-            if (base.OnAttackHit(self, attacker, effect))
-            {
-                if (Utility.GetPseudoChance(blockChance, ref pseudoBlockChance))
-                {
-                    int block = random.Next(minBlock, maxBlock + 1);
-                    effect.Damage -= block;
-                    Menu.Announce($"Your {Name} blocks {block} damage.");
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
         public override void OnBattleStart(CharacterStats player, Stats enemy)
         {
             base.OnBattleStart(player, enemy);
             pseudoBlockChance = blockChance;
         }
+
+        protected override bool AttackHitEffect(CharacterStats player, Stats enemy, EffectValues effect)
+        {
+            if (Utility.GetPseudoChance(blockChance, ref pseudoBlockChance))
+            {
+                int block = random.Next(minBlock, maxBlock + 1);
+                effect.Damage -= block;
+                Menu.Announce($"Your {Name} blocks {block} damage.");
+            }
+
+            return true;
+        }
+
+        protected override string PassiveEffectDescription { get; } = $"On being attacked has a {blockChance}% chance to block {minBlock}-{maxBlock} damage.";
     }
 }

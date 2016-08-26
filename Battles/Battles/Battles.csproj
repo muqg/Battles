@@ -47,7 +47,7 @@
     <Compile Include="Buffs\Characters\SoulShard.cs" />
     <Compile Include="Buffs\Enemies\EnergySurge.cs" />
     <Compile Include="Buffs\Items\AncientRegalia.cs" />
-    <Compile Include="Buffs\Items\El.cs" />
+    <Compile Include="Buffs\Common\ArmourBuff.cs" />
     <Compile Include="Buffs\Items\Eld.cs" />
     <Compile Include="Buffs\Buff.cs" />
     <Compile Include="Buffs\Items\MechanicalYeti\ArmourPlating.cs" />
@@ -70,7 +70,10 @@
     <Compile Include="Interfaces\IExtendedBattleEvents.cs" />
     <Compile Include="Items\Common\Level 0\Dirk.cs" />
     <Compile Include="Items\Common\Level 0\ElRune.cs" />
+    <Compile Include="Items\Common\Level 1\EthRune.cs" />
+    <Compile Include="Items\Common\Level 1\FaerieFireItem.cs" />
     <Compile Include="Items\Common\Level 1\NefRune.cs" />
+    <Compile Include="Items\Common\Level 1\EnchantedMango.cs" />
     <Compile Include="Items\Rare\Level 3\PoorMansShield.cs" />
     <Compile Include="Items\Set\AncientRegalia\AncientRegaliaSet.cs" />
     <Compile Include="Items\Set\AncientRegalia\Bracer.cs" />
@@ -123,8 +126,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Buffs\Common\" />
     <Folder Include="Items\Common\Level 2\" />
+    <Folder Include="Items\Common\Level 3\" />
+    <Folder Include="Items\Rare\Level 0\" />
     <Folder Include="Structs\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

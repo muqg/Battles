@@ -21,10 +21,10 @@ namespace Battles
             SpellPower = OwnerUnit.SpellPower;
 
             ActiveItems = OwnerUnit.Items
-                .Where(i => i.Type == Item.ItemType.Usable)
+                .Where(i => i.Type == Item.ItemType.Active)
                 .Concat(OwnerUnit.Inventory
                     .Where(i => i.Type == Item.ItemType.Consumable && OwnerUnit.Level >= i.Level))
-                .OrderBy(i => i.Type == Item.ItemType.Usable)
+                .OrderBy(i => i.Type == Item.ItemType.Active)
                 .ToList();
         }
 

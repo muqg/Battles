@@ -50,7 +50,7 @@ namespace Battles
             {
                 CharacterStats player = self as CharacterStats;
                 foreach (Item item in player.OwnerUnit.Items)
-                    if (!item.OnAttackHit(player, attacker, attackValues)) return false;
+                    if (!item.OnAttackHit(player, attacker, attackValues)) return false; // Checks for item cooldown and item on attack hit effect
             }
 
             return true;
@@ -72,20 +72,20 @@ namespace Battles
             if (player != null) // Player is attacking
             {
                 foreach (Buff buff in self.Buffs) // Buff events
-                    if (!buff.OnAttackUse(player, target)) return;
+                    if (!buff.OnAttackUse(player, target, attackValues)) return;
                 foreach (Item item in player.OwnerUnit.Items) // Item events
-                    if (!item.OnAttackUse(player, target)) return;
+                    if (!item.OnAttackUse(player, target, attackValues)) return;
             }
             else // Enemy is attacking
             {
                 foreach (Buff buff in self.Buffs)
-                    if (!buff.OnAttackUse((CharacterStats)target, self)) return;
+                    if (!buff.OnAttackUse((CharacterStats)target, self, attackValues)) return;
             }
 
             // Calculate attack value and check buff and item effects
             if (target.OwnerUnit.OnAttackHit(target, self, attackValues))
             {
-                int damage = attackValues.Damage - target.Armour;
+                int damage = Math.Max(0, attackValues.Damage - target.Armour);
                 target.Health -= damage;
 
                 if (player != null) // Player is attacking

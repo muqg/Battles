@@ -45,7 +45,7 @@ namespace Battles
         private static Action equipAction = delegate
         {
             List<Item> equippableItems = Game.CurrentCharacter.Inventory
-                .Where(i => i.Type == Item.ItemType.Normal || i.Type == Item.ItemType.Usable).ToList();
+                .Where(i => i.Type == Item.ItemType.Passive || i.Type == Item.ItemType.Active).ToList();
 
             ShowSingleActionMenu(
                 equippableItems,

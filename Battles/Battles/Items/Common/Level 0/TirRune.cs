@@ -13,9 +13,9 @@ namespace Battles.Items.Common
         {
         }
 
-        protected override string UsageDescription { get; } = $"Restores {manaRestore} mana.";
+        protected override string ActiveEffectDescription { get; } = $"Restores {manaRestore} mana.";
 
-        protected override void ItemEffect(CharacterStats player, Stats enemy)
+        protected override void ActiveEffect(CharacterStats player, Stats enemy)
         {
             player.Mana += manaRestore;
 

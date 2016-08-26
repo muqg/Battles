@@ -6,7 +6,7 @@ namespace Battles.Items.Common
     sealed class Buckler : Item
     {
         private const string name = "Buckler";
-        private const int blockChance = 50;
+        private const int blockChance = 100;
         private const int damageBlock = 2;
 
         private int pseudoBlockChance = blockChance;
@@ -16,28 +16,23 @@ namespace Battles.Items.Common
         {
         }
 
-        protected override string SpecialDescription { get; } = $"On being attacked has a {blockChance}% chance to block {damageBlock} damage";
-
-        public override bool OnAttackHit(Stats self, Stats attacker, EffectValues effect)
-        {
-            if (base.OnAttackHit(self, attacker, effect))
-            {
-                if (Utility.GetPseudoChance(blockChance, ref pseudoBlockChance))
-                {
-                    Menu.Announce($"Your {Name} blocks {damageBlock} damage.");
-                    effect.Damage -= damageBlock;
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
         public override void OnBattleStart(CharacterStats player, Stats enemy)
         {
             base.OnBattleStart(player, enemy);
             pseudoBlockChance = blockChance;
         }
+
+        protected override bool AttackHitEffect(CharacterStats player, Stats enemy, EffectValues attackValues)
+        {
+            if (Utility.GetPseudoChance(blockChance, ref pseudoBlockChance))
+            {
+                Menu.Announce($"Your {Name} blocks {damageBlock} damage.");
+                attackValues.Damage -= damageBlock;
+            }
+
+            return true;
+        }
+
+        protected override string PassiveEffectDescription { get; } = $"On being attacked has a {blockChance}% chance to block {damageBlock} damage";
     }
 }

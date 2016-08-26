@@ -15,7 +15,7 @@ namespace Battles
 
         #region Constructors
         public Item(string name,
-            ItemType type = ItemType.Normal,
+            ItemType type = ItemType.Passive,
             ItemRarity rarity = ItemRarity.Common,
             int level = 0,
             int health = 0,
@@ -54,7 +54,7 @@ namespace Battles
 
         public enum ItemType
         {
-            Normal, Usable, Consumable
+            Passive, Active, Consumable
         }
 
         #region Delegates
@@ -101,10 +101,10 @@ namespace Battles
         public int Level { get; }
         public ItemRarity Rarity { get; }
         public ItemType Type { get; }
-        public int CurrentCooldown { get; set; } = 0;
+        public int CurrentCooldown { get; set; } = 0; // Passive items should set cooldown manually after passive effect triggers; Usable items set cooldown automatically upon usage
 
-        protected virtual string SpecialDescription { get; } = "";
-        protected virtual string UsageDescription { get; } = "";
+        protected virtual string PassiveEffectDescription { get; } = "";
+        protected virtual string ActiveEffectDescription { get; } = "";
         protected virtual ItemSet Set { get; } = null;
 
         protected int Health { get; }
@@ -126,17 +126,38 @@ namespace Battles
             return item;
         }
 
+        // Called at the start of the battle; Always call base when overriding
+        public virtual void OnBattleStart(CharacterStats player, Stats enemy) // Always call when overriding
+        {
+            checkSet(player, Set);
+            CurrentCooldown = 0;
+        }
+
+        public override string ToString() => $"{Name}, level {Level} ({Type.ToString()})";
+
+        // Activates the cooldown for all items of the same type in the provided list
+        public void ActivateCooldown(List<Item> items)
+        {
+            CurrentCooldown = Cooldown + 1; // +1 since one turn is immediately skipped at the end of this one
+
+            foreach (Item i in items)
+                if (this.GetType() == i.GetType())
+                    i.CurrentCooldown = this.CurrentCooldown;
+        }
+
         // Description used during the battle
-        public string BattleDescription() => $"{Name} ({Type.ToString()}) - {UsageDescription}{(CurrentCooldown > 0 ? $"| Cooldown: {CurrentCooldown}" : "")}";
+        public string BattleDescription() => $"{Name} ({Type.ToString()}) - {ActiveEffectDescription}{(CurrentCooldown > 0 ? $" |Cooldown: {CurrentCooldown}" : "")}";
 
         // Checks whether the item is on cooldown
-        public bool CheckCooldown()
+        public bool CheckCooldown(bool announce = true)
         {
             if (CurrentCooldown <= 0)
                 return true;
 
             string turns = CurrentCooldown == 1 ? "turn" : "turns";
-            Console.WriteLine($"Item is on cooldown for {CurrentCooldown} more {turns}.\n");
+            if (announce)
+                Console.WriteLine($"Item is on cooldown for {CurrentCooldown} more {turns}.\n");
+
             return false;
         }
 
@@ -149,7 +170,7 @@ namespace Battles
             str.Add($"Rarity: {Rarity}");
             str.Add($"Type: {Type}");
 
-            if(Health > 0)
+            if (Health > 0)
                 str.Add($"Health: {Health}");
             if (Mana > 0)
                 str.Add($"Mana: {Mana}");
@@ -170,11 +191,11 @@ namespace Battles
             if (setDescr.Length > 0)
                 str.Add("\n" + setDescr);
 
-            if (SpecialDescription.Length > 0)
-                str.Add("\n" + SpecialDescription);
+            if (PassiveEffectDescription.Length > 0)
+                str.Add("\n" + PassiveEffectDescription);
 
-            if (UsageDescription.Length > 0)
-                str.Add("\nUse: " + UsageDescription);
+            if (ActiveEffectDescription.Length > 0)
+                str.Add("\nUse: " + ActiveEffectDescription);
 
             return string.Join("\n", str);
         }
@@ -202,10 +223,38 @@ namespace Battles
             player.SpellPower += SpellPower;
         }
 
+        public bool OnAttackHit(Stats self, Stats attacker, EffectValues attackValues)
+        {
+            if (CheckCooldown(false))
+                return AttackHitEffect(self as CharacterStats, attacker, attackValues);
+            return true;
+        }
+
+        public bool OnAttackUse(CharacterStats player, Stats enemy, EffectValues attackValues)
+        {
+            if (CheckCooldown(false))
+                return (AttackUseEffect(player, enemy, attackValues));
+            return true;
+        }
+
+        public bool OnSkillHit(CharacterStats player, Stats enemy, EffectValues skillValues)
+        {
+            if (CheckCooldown(false))
+                return SkillHitEffect(player, enemy, skillValues); // False on interrupted skill
+            return true;
+        }
+
+        public bool OnSkillUse(CharacterStats player, Stats enemy, EffectValues skillValues)
+        {
+            if (CheckCooldown(false))
+                return SkillUseEffect(player, enemy, skillValues); // False on interrupted skill
+            return true;
+        }
+
         // Uses the item
         public void Use(CharacterStats player, Stats enemy)
         {
-            ItemEffect(player, enemy); // Actual effect of the item
+            ActiveEffect(player, enemy); // Actual effect of the item
 
             if (Type == ItemType.Consumable) // Remove the item if it is consumable
             {
@@ -213,41 +262,24 @@ namespace Battles
                 player.ActiveItems.Remove(this);
                 Game.CurrentPlayer.Save(); // Save on consuming an item
             }
-            else if(Cooldown > 0) // Set cooldown if any
-                CurrentCooldown = Cooldown + 1; // +1 since one turn is immediately skipped at the end of this one
+            else if (Cooldown > 0) // Set cooldown if any
+                ActivateCooldown(player.ActiveItems);
         }
 
-        public virtual bool OnAttackHit(Stats self, Stats attacker, EffectValues effect)
-        {
-            return true;
-        }
+        // Returns true if attack should continue; False on interrupted (e.g. miss, dodge, etc.)
+        protected virtual bool AttackHitEffect(CharacterStats player, Stats enemy, EffectValues attackValues) => true; // Don't call when overriding
 
-        public virtual bool OnAttackUse(CharacterStats player, Stats enemy)
-        {
-            return true;
-        }
-
-        // Called at the start of the battle; Always call base when overriding
-        public virtual void OnBattleStart(CharacterStats player, Stats enemy) // Always call when overriding
-        {
-            checkSet(player, Set);
-            CurrentCooldown = 0;
-        }
-
-        public virtual bool OnSkillHit(CharacterStats player, Stats enemy, EffectValues effect)
-        {
-            return true;
-        }
-
-        public virtual bool OnSkillUse(CharacterStats player, Stats enemy)
-        {
-            return true;
-        }
-
-        public override string ToString() => $"{Name}, level {Level} ({Type.ToString()})";
+        // Returns true if attack should continue; False on interrupted (e.g. miss, dodge, etc.)
+        protected virtual bool AttackUseEffect(CharacterStats player, Stats enemy, EffectValues attackValues) => true; // Don't call when overriding
 
         // Item effect for usable and consumable items for when used
-        protected virtual void ItemEffect(CharacterStats player, Stats enemy) { }
+        protected virtual void ActiveEffect(CharacterStats player, Stats enemy) { }
+
+        // Returns true if skill should continue; False on interrupted (e.g. miss, resist, etc.)
+        protected virtual bool SkillHitEffect(CharacterStats player, Stats enemy, EffectValues attackValues) => true; // Don't call when overriding
+
+        // Returns true if skill should continue; False on interrupted (e.g. miss, resist, etc.)
+        protected virtual bool SkillUseEffect(CharacterStats player, Stats enemy, EffectValues attackValues) => true; // Don't call when overriding
 
         // Checks if all set items are equipped and adds the corresponding set buff
         private static void checkSet(CharacterStats player, ItemSet set)
@@ -290,7 +322,7 @@ namespace Battles
             if (set != null)
             {
                 List<string> str = new List<string>();
-                str.Add("Set:");
+                str.Add("Equipped set:");
                 foreach (Type t in set.Items)
                 {
                     if (Game.CurrentCharacter.Items.Any(i => i.GetType() == t))

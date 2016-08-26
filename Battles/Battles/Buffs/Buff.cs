@@ -97,22 +97,22 @@ namespace Battles
             return appliedBuff; // Return already present buff
         }
 
-        public virtual bool OnAttackHit(Stats self, Stats attacker, EffectValues effect)
+        public virtual bool OnAttackHit(Stats self, Stats attacker, EffectValues attackValue)
         {
             return true;
         }
 
-        public virtual bool OnAttackUse(CharacterStats player, Stats enemy)
+        public virtual bool OnAttackUse(CharacterStats player, Stats enemy, EffectValues attackValues)
         {
             return true;
         }
 
-        public virtual bool OnSkillHit(CharacterStats player, Stats enemy, EffectValues effect)
+        public virtual bool OnSkillHit(CharacterStats player, Stats enemy, EffectValues skillValues)
         {
             return true;
         }
 
-        public virtual bool OnSkillUse(CharacterStats player, Stats enemy)
+        public virtual bool OnSkillUse(CharacterStats player, Stats enemy, EffectValues skillValues)
         {
             return true;
         }

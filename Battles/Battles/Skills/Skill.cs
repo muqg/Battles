@@ -85,9 +85,9 @@ namespace Battles
             if (SetSkillEffectValues(player, enemy))
             {
                 foreach (Buff buff in player.Buffs) // Call buff effects
-                    if (!buff.OnSkillUse(player, enemy)) return false;
+                    if (!buff.OnSkillUse(player, enemy, SkillEffectValues)) return false;
                 foreach (Item item in player.OwnerUnit.Items) // Call item effects
-                    if (!item.OnSkillUse(player, enemy)) return false;
+                    if (!item.OnSkillUse(player, enemy, SkillEffectValues)) return false;
 
                 if (enemy.OwnerUnit.OnSkillHit(player, enemy, SkillEffectValues))
                 {
