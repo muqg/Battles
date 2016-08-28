@@ -28,7 +28,7 @@ namespace Battles
 
         protected override bool SetSkillEffectValues(CharacterStats player, Stats enemy)
         {
-            shard = Buff.AddBuff<SoulShard>(player.Buffs);
+            shard = Buff.AddBuff<SoulShard>(player);
             if (soulShardCost > shard.Stacks)
             {
                 Console.WriteLine($"Not enough {shard.Name} to use skill.\n");
@@ -43,7 +43,7 @@ namespace Battles
 
         protected override void SkillEffect(CharacterStats player, Stats enemy)
         {
-            shard.SetStacks(player, -soulShardCost);
+            shard.SetStacks(-soulShardCost);
             shard.WriteStacks();
         }
 

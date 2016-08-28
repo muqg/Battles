@@ -6,7 +6,7 @@ namespace Battles.Items.Common
     sealed class FaerieFireItem : Item
     {
         private const string name = "Faerie Fire";
-        private const int healthRestore = 8;
+        private const int healthRestore = 24;
 
         public FaerieFireItem()
             : base(name, ItemType.Active, level: 1, attack: 2, cooldown: 5, dropChance: 25)

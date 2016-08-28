@@ -153,7 +153,18 @@ namespace Battles
             return character;
         }
 
-        public override void Act(CharacterStats player, Stats enemy)
+        public override bool OnSkillHit(CharacterStats player, Stats enemy, EffectValues skillEffectValues) // Always call when overriding
+        {
+            foreach (Buff buff in player.Buffs)
+                if (!buff.OnSkillHit(player, enemy, skillEffectValues)) return false; // Skill interrupted by buff effect
+
+            foreach (Item item in player.OwnerUnit.Items)
+                if (!item.OnSkillHit(player, enemy, skillEffectValues)) return false; // Skill interrupted by item effect
+
+            return base.OnSkillHit(player, enemy, skillEffectValues);
+        }
+
+        public sealed override void Act(CharacterStats player, Stats enemy)
         {
             bool playerTurn = true;
             do
@@ -164,6 +175,22 @@ namespace Battles
 
             base.Act(player, enemy);
         }
+
+        // Used for preparations at the start of the battle
+        public sealed override void Initialize(CharacterStats player, Stats enemy)
+        {
+            // Refresh skills
+            foreach (Skill s in Skills)
+                s.Refresh();
+
+            // Trigger initial item effects
+            foreach (Item item in player.ActiveItems)
+                item.OnBattleStart(player, enemy);
+
+            base.Initialize(player, enemy);
+        }
+
+        public sealed override string ToString() => $"{Name}, level {Level}, {Class}";
 
         public string Description()
         {
@@ -187,33 +214,6 @@ namespace Battles
             $"Total victories: {TotalVictories}",
             "");
         }
-
-        // Used for preparations at the start of the battle
-        public override void Initialize(CharacterStats player, Stats enemy)
-        {
-            // Refresh skills
-            foreach (Skill s in Skills)
-                s.Refresh();
-
-            // Trigger initial item effects
-            foreach (Item item in Items)
-                item.OnBattleStart(player, enemy);
-
-            base.Initialize(player, enemy);
-        }
-
-        public override bool OnSkillHit(CharacterStats player, Stats enemy, EffectValues skillEffectValues) // Always call when overriding
-        {
-            foreach (Buff buff in player.Buffs)
-                if (!buff.OnSkillHit(player, enemy, skillEffectValues)) return false; // Skill interrupted by buff effect
-
-            foreach (Item item in player.OwnerUnit.Items)
-                if (!item.OnSkillHit(player, enemy, skillEffectValues)) return false; // Skill interrupted by item effect
-
-            return base.OnSkillHit(player, enemy, skillEffectValues);
-        }
-
-        public override string ToString() => $"{Name}, level {Level}, {Class}";
 
         // Equips an item (adds it to Items) -> Returns true on success; False on already fully equipped
         public bool EquipItem(Item item)
@@ -341,7 +341,7 @@ namespace Battles
             foreach (Skill skill in Skills) // Manage skill cooldowns
                 skill.CurrentCooldown = Math.Max(0, skill.CurrentCooldown - 1);
 
-            foreach (Item item in Items)
+            foreach (Item item in player.ActiveItems)
                 item.CurrentCooldown = Math.Max(0, item.CurrentCooldown - 1);
         }
 

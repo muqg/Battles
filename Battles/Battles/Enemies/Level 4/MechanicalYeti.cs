@@ -35,8 +35,8 @@ namespace Battles.Enemies
                 target = player;
 
             int sparePart = random.Next(0, spareParts.Length);
-            Buff buff = Buff.AddBuff(Activator.CreateInstance(spareParts[sparePart]) as Buff, target.Buffs);
-            buff.SetStacks(target);
+            Buff buff = Buff.AddBuff(Activator.CreateInstance(spareParts[sparePart]) as Buff, target);
+            buff.SetStacks();
 
             Menu.Announce($"{Name} gives {buff.Name} to {target.OwnerUnit.Name}");
         }

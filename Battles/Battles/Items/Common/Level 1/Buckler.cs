@@ -6,7 +6,7 @@ namespace Battles.Items.Common
     sealed class Buckler : Item
     {
         private const string name = "Buckler";
-        private const int blockChance = 100;
+        private const int blockChance = 45;
         private const int damageBlock = 2;
 
         private int pseudoBlockChance = blockChance;

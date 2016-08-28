@@ -28,5 +28,6 @@
         // Inventory and items
         internal const int InventoryLimit = 42;
         internal const int MaxEquippedItems = 6;
+        internal const int RuneBuffStacks = 3;
     }
 }

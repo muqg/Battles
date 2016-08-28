@@ -133,7 +133,7 @@ namespace Battles
             int index = 0;
             while(index < Buffs.Count)
             {
-                if (Buffs[index].CheckDuration(this)) // Check if buff duration (wether it is still applied); true = applied; false = expired
+                if (Buffs[index].CheckDuration()) // Check if buff duration (wether it is still applied); true = applied; false = expired
                     index += 1;
             }
         }

@@ -6,7 +6,7 @@ namespace Battles.Items.Rare
     sealed class PoorMansShield : Item
     {
         private const string name = "Poor Man's Shield";
-        private const int blockChance = 65;
+        private const int blockChance = 55;
         private const int minBlock = 2;
         private const int maxBlock = 6;
 

@@ -17,8 +17,8 @@
             int attack = skillEffectValues.SourceSkill.Cost / 2;
 
             EnergySurge surge = new EnergySurge(attack);
-            Buff.AddBuff(surge, self.Buffs);
-            surge.SetStacks(self);
+            Buff.AddBuff(surge, self);
+            surge.SetStacks();
 
             Menu.Announce($"Using your skill gives {Name} {surge.Name} gaining {attack} attack for its next turn");
 

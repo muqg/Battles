@@ -25,7 +25,7 @@ namespace Battles
 
         protected override bool SetSkillEffectValues(CharacterStats player, Stats enemy)
         {
-            essence = Buff.AddBuff<ShadowEssence>(player.Buffs);
+            essence = Buff.AddBuff<ShadowEssence>(player);
             int damage = Power(player, enemy) * essence.Stacks;
             int healing = heal * essence.Stacks;
 
@@ -40,13 +40,13 @@ namespace Battles
             player.Mana += manaRestore;
             Battle.WritePlayerMana(Name, manaRestore, player);
 
-            essence.Remove(player);
+            essence.Remove();
             essence.WriteStacks();
         }
 
         protected override string SpecificBattleDescription(CharacterStats player, Stats enemy)
         {
-            int stacks = Buff.AddBuff<ShadowEssence>(player.Buffs).Stacks;
+            int stacks = Buff.AddBuff<ShadowEssence>(player).Stacks;
             int damage = Power(player, enemy);
 
             return $"Restores {heal} health and {manaRestore} mana to you and deals ({damage}) damage to your enemy per stack of {essence.Name}."

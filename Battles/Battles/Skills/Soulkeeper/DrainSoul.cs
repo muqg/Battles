@@ -33,8 +33,8 @@ namespace Battles
 
         protected override void SkillEffect(CharacterStats player, Stats enemy)
         {
-            shard = Buff.AddBuff<SoulShard>(player.Buffs);
-            shard.SetStacks(player); // Add one stack
+            shard = Buff.AddBuff<SoulShard>(player);
+            shard.SetStacks(); // Add one stack
             shard.WriteStacks();
         }
 

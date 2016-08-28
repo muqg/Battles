@@ -11,6 +11,6 @@ namespace Battles
         {
         }
 
-        protected override string Description() => $"{(Armour >= 0 ? "Increases" : "Decreases")} armour by {Math.Abs(Armour) * Stacks}";
+        protected override string Description() => $"{(Armour >= 0 ? "Increases" : "Decreases")} Armour by {Math.Abs(Armour) * Stacks}";
     }
 }

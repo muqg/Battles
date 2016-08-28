@@ -31,9 +31,9 @@ namespace Battles
         {
             if (Utility.GetPseudoChance(EssenceGainChance, ref EssenceGainPseudoChance))
             {
-                essence = Buff.AddBuff<ShadowEssence>(player.Buffs);
+                essence = Buff.AddBuff<ShadowEssence>(player);
 
-                essence.SetStacks(player); // Add one stack
+                essence.SetStacks(); // Add one stack
                 essence.WriteStacks();
             }
         }
@@ -42,6 +42,6 @@ namespace Battles
             $"Deals {Power(player, enemy)} damage and has a {EssenceGainChance}% chance to grant a {essence.Name}.";
 
         protected override string SpecificDescription() => $"Flays the mind of your enemy dealing damage "
-            + $"and has a ({EssenceGainChance}%) chance to grant you a {essence.Name}. \nLevels increase damage and gain chance.";
+            + $"and has a ({EssenceGainChance}%) chance to grant you a {essence.Name}. \nLevels increase damage and {essence.Name} gain chance.";
     }
 }

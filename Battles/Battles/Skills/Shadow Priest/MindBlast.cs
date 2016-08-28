@@ -23,7 +23,7 @@ namespace Battles
 
         protected override bool SetSkillEffectValues(CharacterStats player, Stats enemy)
         {
-            essence = Buff.AddBuff<ShadowEssence>(player.Buffs);
+            essence = Buff.AddBuff<ShadowEssence>(player);
             int damage = Power(player, enemy) * essence.Stacks;
 
             SkillEffectValues = new EffectValues(damage, source: this);
@@ -33,13 +33,13 @@ namespace Battles
 
         protected override void SkillEffect(CharacterStats player, Stats enemy)
         {
-            essence.Remove(player);
+            essence.Remove();
             essence.WriteStacks();
         }
 
         protected override string SpecificBattleDescription(CharacterStats player, Stats enemy)
         {
-            int stacks = Buff.AddBuff<ShadowEssence>(player.Buffs).Stacks;
+            int stacks = Buff.AddBuff<ShadowEssence>(player).Stacks;
             int damage = Power(player, enemy);
 
             return $"Consumes all({stacks}) of {essence.Name} to deal ({damage}) damage per stack.";

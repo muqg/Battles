@@ -24,8 +24,8 @@ namespace Battles
 
         protected override void SkillEffect(CharacterStats player, Stats enemy)
         {
-            essence = Buff.AddBuff<ShadowEssence>(player.Buffs);
-            essence.SetStacks(player, StackGain);
+            essence = Buff.AddBuff<ShadowEssence>(player);
+            essence.SetStacks(StackGain);
             essence.WriteStacks();
         }
 

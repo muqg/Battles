@@ -6,23 +6,25 @@ namespace Battles.Items.Common
     sealed class EldRune : Item
     {
         private const string name = "Eld Rune";
-        private const float haste = 20f;
-        private const int duration = 3;
+        private const string buffName = "Eld";
+        private const float buffHaste = 8f;
+        private const int buffDuration = 3;
 
         public EldRune() 
             : base(name, ItemType.Consumable)
         {
         }
 
-        protected override string ActiveEffectDescription { get; } = $"Increases your haste by {haste} for {duration} turns.";
+        protected override string ActiveEffectDescription { get; } = $"Increases your haste by {buffHaste} for {buffDuration} turns. Stacks up to {Constants.RuneBuffStacks} times.";
 
         protected override void ActiveEffect(CharacterStats player, Stats enemy)
         {
-            Eld eld = new Eld(duration, haste);
-            eld = Buff.AddBuff(eld, player.Buffs) as Eld;
-            eld.SetStacks(player);
+            Buff eld = new HasteBuff(buffName, buffHaste, buffDuration, Constants.RuneBuffStacks);
+            eld = Buff.AddBuff(eld, player);
+            eld.SetStacks();
 
-            Console.WriteLine($"Using {Name} increases your Haste by {haste} for {duration} turns.\n");
+            Menu.Announce($"Using {Name} increases your Haste by {buffHaste} for {buffDuration} turns.");
+            eld.WriteStacks();
         }
     }
 }

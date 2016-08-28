@@ -133,7 +133,7 @@ namespace Battles
             CurrentCooldown = 0;
         }
 
-        public override string ToString() => $"{Name}, level {Level} ({Type.ToString()})";
+        public sealed override string ToString() => $"{Name}, level {Level} ({Type.ToString()})";
 
         // Activates the cooldown for all items of the same type in the provided list
         public void ActivateCooldown(List<Item> items)
@@ -262,8 +262,8 @@ namespace Battles
                 player.ActiveItems.Remove(this);
                 Game.CurrentPlayer.Save(); // Save on consuming an item
             }
-            else if (Cooldown > 0) // Set cooldown if any
-                ActivateCooldown(player.ActiveItems);
+
+            ActivateCooldown(player.ActiveItems);
         }
 
         // Returns true if attack should continue; False on interrupted (e.g. miss, dodge, etc.)
@@ -273,7 +273,7 @@ namespace Battles
         protected virtual bool AttackUseEffect(CharacterStats player, Stats enemy, EffectValues attackValues) => true; // Don't call when overriding
 
         // Item effect for usable and consumable items for when used
-        protected virtual void ActiveEffect(CharacterStats player, Stats enemy) { }
+        protected virtual void ActiveEffect(CharacterStats player, Stats enemy) { } // Don't call when overriding
 
         // Returns true if skill should continue; False on interrupted (e.g. miss, resist, etc.)
         protected virtual bool SkillHitEffect(CharacterStats player, Stats enemy, EffectValues attackValues) => true; // Don't call when overriding
@@ -294,8 +294,8 @@ namespace Battles
 
                 // Full set is present
                 Buff buff = Activator.CreateInstance(set.Buff) as Buff;
-                Buff.AddBuff(buff, player.Buffs);
-                buff.SetStacks(player);
+                Buff.AddBuff(buff, player);
+                buff.SetStacks();
             }
         }
 

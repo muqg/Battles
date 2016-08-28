@@ -26,7 +26,7 @@ namespace Battles
 
         protected override int Power(CharacterStats player, Stats enemy)
         {
-            shard = Buff.AddBuff<SoulShard>(player.Buffs);
+            shard = Buff.AddBuff<SoulShard>(player);
 
             return Math.Max(0, player.Attack * attackModifier + shard.Stacks * shardModifier - enemy.Armour);
         }

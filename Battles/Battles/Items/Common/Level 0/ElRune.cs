@@ -7,7 +7,7 @@ namespace Battles.Items.Common
     {
         private const string name = "El Rune";
         private const string buffName = "El";
-        private const int buffArmour = 3;
+        private const int buffArmour = 4;
 
         public ElRune()
             : base(name, ItemType.Consumable)
@@ -19,8 +19,8 @@ namespace Battles.Items.Common
         protected override void ActiveEffect(CharacterStats player, Stats enemy)
         {
             Buff el = new ArmourBuff(buffName, buffArmour);
-            el = Buff.AddBuff(el, player.Buffs) as Buff;
-            el.SetStacks(player);
+            el = Buff.AddBuff(el, player) as Buff;
+            el.SetStacks();
 
             Console.WriteLine($"Using {Name} increaeses your Armour by {buffArmour}.\n");
         }

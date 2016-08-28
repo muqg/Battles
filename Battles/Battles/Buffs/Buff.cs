@@ -6,6 +6,8 @@ namespace Battles
 {
     class Buff : IExtendedBattleEvents
     {
+        protected static Random random = new Random();
+
         protected int _stacks = 0;
 
         #region Constructors
@@ -55,6 +57,7 @@ namespace Battles
         protected int MaxStacks { get; }
         protected int Duration { get; }
         protected int CurrentDuration { get; set; }
+        protected Stats OwnerStats { get; set; }
 
         public int Stacks
         {
@@ -71,13 +74,14 @@ namespace Battles
         #endregion Properties
 
         // Adds a buff of existing type that is not initialized or returns an already applied one
-        public static T AddBuff<T>(List<Buff> buffs) where T : Buff, new()
+        public static T AddBuff<T>(Stats target) where T : Buff, new()
         {
-            T appliedBuff = GetBuff<T>(buffs);
+            T appliedBuff = GetBuff<T>(target.Buffs);
             if (appliedBuff == null) // Add buff if not already preset and return it
             {
                 T buff = new T();
-                buffs.Add(buff);
+                target.Buffs.Add(buff);
+                buff.OwnerStats = target;
                 return buff;
             }
             else
@@ -85,12 +89,13 @@ namespace Battles
         }
 
         // Adds a buff of non-existing (dynamic) type, an existing type with parameters that is pre-initialized or returns an already applied one
-        public static Buff AddBuff(Buff buff, List<Buff> buffs)
+        public static Buff AddBuff(Buff buff, Stats target)
         {
-            Buff appliedBuff = GetBuff(buff.Name, buffs);
+            Buff appliedBuff = GetBuff(buff.Name, target.Buffs);
             if(appliedBuff == null) // Add buff if not already present
             {
-                buffs.Add(buff);
+                target.Buffs.Add(buff);
+                buff.OwnerStats = target;
                 return buff;
             }
 
@@ -117,86 +122,9 @@ namespace Battles
             return true;
         }
 
-        protected virtual void Effect(Stats stats) { }
+        protected virtual void Effect() { }
 
-        public override string ToString()
-        {
-            return $"{Name} - {SpecificDescription()}";
-        }
-
-        // Adds or removes stacks and manages corresponding stats
-        public void SetStacks(Stats stats, int count = 1)
-        {
-            if (stats.Buffs.Contains(this)) // Make sure to not add stacks to stats without this buff
-            {
-                CurrentDuration = Duration; // Always refresh duration when applying stacks
-
-                if (count + Stacks >= MaxStacks)
-                    count = MaxStacks - Stacks;
-                else if (count + Stacks < 0)
-                    count = Stacks;
-
-                Stacks += count;
-
-                stats.MaxHealth += count * Health; // Setting MaxHealth affects Health as well
-                stats.HealthRegen += count * HealthRegeneration;
-                stats.Attack += count * Attack;
-                stats.Armour += count * Armour;
-                stats.Haste += count * Haste; // Set only MaxHaste here
-
-                if (stats is CharacterStats)
-                {
-                    CharacterStats cs = stats as CharacterStats;
-
-                    cs.MaxMana += count * Mana; // Setting MaxMana affects Mana as well
-                    cs.ManaRegen += count * ManaRegeneration;
-                    cs.SpellPower += count * SpellPower;
-                }
-            }
-        }
-
-        // Removes the buff
-        public void Remove(Stats stats)
-        {
-            SetStacks(stats, -Stacks); // Remove buff bonuses to the stats
-            stats.Buffs.Remove(this);
-        }
-
-        // Checks the duration of the buff and uses its effect
-        public bool CheckDuration(Stats stats)
-        {         
-            // NOTE: Negative Duration means infinite or until removed in a special manner
-
-            if (CurrentDuration > 0)
-            {
-                // Use buff's effect
-                Effect(stats);
-                CurrentDuration = Math.Max(0, CurrentDuration - 1); // Limits duration to 0
-            }
-
-            if (CurrentDuration == 0)
-            {
-                Remove(stats);
-                return false;
-            }
-
-            // Returns true if buff is still applied. Returns false if buff has expired (has been removed)
-            return true;
-        }
-
-        public void WriteStacks()
-        {
-            Console.WriteLine($"You have {Stacks} stacks of {Name}.\n".Indent());
-        }
-
-        public void WriteEnemyStacks(string enemyName)
-        {
-            Console.WriteLine($"{enemyName} has {Stacks} stacks of {Name}.\n".Indent());
-        }
-
-        protected virtual string Description() => "Unknown";
-
-        protected string SpecificDescription()
+        public sealed override string ToString()
         {
             StringBuilder sb = new StringBuilder();
             // General description
@@ -212,8 +140,74 @@ namespace Battles
             if (MaxStacks > 1 && MaxStacks != int.MaxValue)
                 sb.Append($"/{MaxStacks}");
 
-            return sb.ToString();
+            return $"{Name} - {sb.ToString()}";
         }
+
+        // Adds or removes stacks and manages corresponding stats
+        public void SetStacks(int count = 1)
+        {
+            if (OwnerStats.Buffs.Contains(this)) // Make sure not to add stacks to stats without this buff
+            {
+                CurrentDuration = Duration; // Always refresh duration when applying stacks
+
+                if (count + Stacks >= MaxStacks)
+                    count = MaxStacks - Stacks;
+                else if (count + Stacks < 0)
+                    count = Stacks;
+
+                Stacks += count;
+
+                OwnerStats.MaxHealth += count * Health; // Setting MaxHealth affects Health as well
+                OwnerStats.HealthRegen += count * HealthRegeneration;
+                OwnerStats.Attack += count * Attack;
+                OwnerStats.Armour += count * Armour;
+                OwnerStats.Haste += count * Haste; // Set only MaxHaste here
+
+                if (OwnerStats is CharacterStats)
+                {
+                    CharacterStats cs = OwnerStats as CharacterStats;
+
+                    cs.MaxMana += count * Mana; // Setting MaxMana affects Mana as well
+                    cs.ManaRegen += count * ManaRegeneration;
+                    cs.SpellPower += count * SpellPower;
+                }
+            }
+        }
+
+        // Removes the buff
+        public void Remove()
+        {
+            SetStacks(-Stacks); // Remove buff bonuses to the stats
+            OwnerStats.Buffs.Remove(this);
+        }
+
+        // Checks the duration of the buff and uses its effect
+        public bool CheckDuration()
+        {         
+            // NOTE: Negative Duration means infinite or until removed in a special manner
+
+            if (CurrentDuration > 0)
+            {
+                // Use buff's effect
+                Effect();
+                CurrentDuration = Math.Max(0, CurrentDuration - 1); // Limits duration to 0
+            }
+
+            if (CurrentDuration == 0)
+            {
+                Remove();
+                return false;
+            }
+
+            // Returns true if buff is still applied. Returns false if buff has expired (has been removed)
+            return true;
+        }
+
+        public void WriteStacks() => Console.WriteLine($"You have {Stacks} stacks of {Name}.\n".Indent());
+
+        public void WriteEnemyStacks(string enemyName) => Console.WriteLine($"{enemyName} has {Stacks} stacks of {Name}.\n".Indent());
+
+        protected virtual string Description() => "Unknown";
 
         // Returns buff of type T. It is added if not already present
         private static T GetBuff<T>(List<Buff> buffs) where T : Buff, new()
